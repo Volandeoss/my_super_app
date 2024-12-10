@@ -1,0 +1,29 @@
+<div class="flex justify-center space-x-4 p-4 bg-gray-100 rounded-lg shadow-md">
+  <Button
+    as="a"
+    animation="pulse"
+    class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition"
+    size="xl"
+    href={~p"/admin"}
+  >
+    Admin
+  </Button>
+  <Button
+    as="a"
+    animation="pulse"
+    class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition"
+    size="xl"
+    href={~p"/menu"}
+  >
+    Menu
+  </Button>
+  <Button
+    as="a"
+    animation="pulse"
+    class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition"
+    size="xl"
+    href={~p"/tabs"}
+  >
+    Tabs
+  </Button>
+</div>

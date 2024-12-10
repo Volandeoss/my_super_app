@@ -1,0 +1,165 @@
+<p class="text-moon-64 transition-colors mb-20">Sites</p>
+
+<div class="flex items-center justify-left mb-2">
+  <Search id="default-search" {=@filter} class="w-[20%] mr-4" options={[]} on_keyup="change_filter"><Dropdown id="1" disabled>
+      <Dropdown.Trigger disabled />
+    </Dropdown>
+  </Search>
+  <Chip is_stroke class="mr-4 bg-gray-200" on_click="open_time">Filter by time</Chip>
+  <Chip is_stroke class="mr-4 bg-gray-200" on_click="clear_all">Clear all</Chip>
+  <Button on_click="set_open">Add new Site</Button>
+</div>
+{#if @time_open?}
+  <div>
+    <Form for={@time_form} class="mr-4" change="change_time">
+      <div>
+        <Tooltip>
+          <Tooltip.Trigger>
+            <Field field={:inserted_at}>
+              <Input class="mb-2" {=@type} value={@from} placeholder="From" />
+            </Field>
+          </Tooltip.Trigger>
+          <Tooltip.Content position="right">
+            From
+            <Tooltip.Arrow />
+          </Tooltip.Content>
+        </Tooltip>
+      </div>
+      <div>
+        <Tooltip>
+          <Tooltip.Trigger>
+            <Field field={:updated_at}>
+              <Input class="mb-2" {=@type} value={@to} placeholder="To" />
+            </Field>
+          </Tooltip.Trigger>
+          <Tooltip.Content position="right">
+            To
+            <Tooltip.Arrow />
+          </Tooltip.Content>
+        </Tooltip>
+      </div>
+    </Form>
+  </div>
+{/if}
+
+<Table items={site <- @current} sorting_click="handle_sorting_click" {=@sort} is_zebra_style>
+  <Column label="#" name="id" sortable>
+    {site.id}
+  </Column>
+  <Column label="Brand" name="brand" sortable>
+    {site.brand}
+  </Column>
+  <Column label="operator" name="operator_name" sortable>
+    {site.operator_name}
+  </Column>
+  <Column label="Status" name="status" sortable>
+    {#if site.status}
+      Active
+    {#else}
+      Disabled
+    {/if}
+  </Column>
+  <Column label="inserted at" name="inserted_at" sortable>
+    {site.inserted_at |> DateTime.to_date()} {site.inserted_at |> NaiveDateTime.to_time()}
+  </Column>
+  <Column label="updated at">
+    {site.updated_at |> DateTime.to_date()} {site.updated_at |> NaiveDateTime.to_time()}
+  </Column>
+
+  <Column>
+    <div class="flex items-center">
+      {#if site.operator_id != @current_user.operator_id}
+        <IconButton
+          disabled
+          icon="media_play"
+          size="md"
+          class="mr-2"
+          on_click="change_status"
+          value={site.id}
+        />
+        <IconButton
+          disabled
+          icon="other_flame"
+          size="md"
+          class="bg-[red]"
+          on_click="delete"
+          value={site.id}
+        >Delete</IconButton>
+      {#else}
+        <IconButton icon="media_play" size="xl" class="mr-2" on_click="change_status" value={site.id} />
+        <IconButton icon="other_flame" size="xl" class="bg-[red]" on_click="set_open" value={site.id}>Delete</IconButton>
+      {/if}
+    </div>
+  </Column>
+</Table>
+
+<Pagination
+  id="with_buttons"
+  total_pages={total_pages(assigns)}
+  value={@current_page}
+  on_change="handle_paging_click"
+>
+  <Pagination.PrevButton class="border-none">
+    <ControlsChevronLeft class="text-moon-24 rtl:rotate-180" />
+  </Pagination.PrevButton>
+  <Pagination.Pages />
+  <Pagination.NextButton class="border-none">
+    <ControlsChevronRight class="text-moon-24 rtl:rotate-180" />
+  </Pagination.NextButton>
+</Pagination>
+
+<Modal id="default_modal" is_open={@editing?} on_close="set_close">
+  <Modal.Backdrop />
+  <Modal.Panel>
+    <div class="p-4">
+      <p class="text-moon-16 text-trunks">
+        {#if @site_id}
+          <div class="p-4 border-b-2 border-beerus">
+            <h3 class="text-moon-18 text-bulma font-medium">
+              <b>
+                Are you sure?
+              </b>
+            </h3>
+          </div>
+          <div class="p-4">
+            <p>Brand: {@site.brand}</p>
+            <p class="text-moon-16 text-trunks">
+              <p>Operator: {@site.operator_name}</p>
+            </p>
+          </div>
+          <div class="p-4 border-t-2 border-beerus" style="display: flex">
+            <Button on_click="set_close">Nooo!</Button>
+            <Button animation="error" class="ml-44" on_click="delete">Delete site</Button>
+          </div>
+        {#else}
+          <div class="p-4 border-b-2 border-beerus">
+            <h3 class="text-moon-18 text-bulma font-medium">
+              Create new site
+            </h3>
+          </div>
+          <Form for={@form} change="validate" submit="add">
+            <Field field={:brand} class="pt-3">
+              <Input placeholder="New Site" />
+            </Field>
+            <Field field={:operator_id} class="pt-3">
+              <input hidden value={@current_user.operator_id}>
+            </Field>
+            <Form.Field field={:status} class="pt-4">
+              <Form.Dropdown options={[%{key: "Active", value: true}, %{key: "Disabled", value: false}]} />
+            </Form.Field>
+            <Dropdown disabled id="dropdown-03">
+              <Dropdown.Options titles={[]} />
+              <Dropdown.Trigger disabled :let={value: _value}>
+                <Chip disabled class="w-64"><b>Operator: {@current_user.operator_name}</b></Chip>
+              </Dropdown.Trigger>
+            </Dropdown>
+            <div class="pt-3 flex justify-center">
+              <Button type="submit" class="ml-4">Save</Button>
+              <Button on_click="set_close" class="ml-4">Close</Button>
+            </div>
+          </Form>
+        {/if}
+      </p>
+    </div>
+  </Modal.Panel>
+</Modal>

@@ -1,0 +1,161 @@
+<div class="flex justify-around w-full">
+  <div class="w-56 bg-goku flex flex-col gap-2 rounded-moon-s-lg p-4">
+    {#for menu <- @left_menu}
+      {#if menu.title == "Tailwind"}
+        <MenuItem role="switch" is_selected={@expanded0} title={menu.title} on_click="on_expand0" />
+      {#else}
+        <MenuItem>{menu.title}</MenuItem>
+      {/if}
+    {/for}
+    {#if @expanded0}
+      <MenuItem>
+        <span class="w-6" />
+        <Lego.Title>
+          Accordion</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-6" />
+        <Lego.Title>
+          Avatar</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-6" />
+        <Lego.Title>
+          Breadcrumb</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-6" />
+        <Lego.Title>
+          Button</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-6" />
+        <Lego.Title>
+          Checkbox</Lego.Title>
+      </MenuItem>
+    {/if}
+  </div>
+  <div class="w-56 bg-goku flex flex-col gap-2 rounded-moon-s-lg p-4">
+    <MenuItem>
+      <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+        <p class="leading-4 font-semibold text-moon-10">B</p>
+      </span>
+      <Lego.Title>
+        <p class="leading-6 text-moon-14 font-semibold">Bitcasino</p>
+      </Lego.Title>
+    </MenuItem>
+    <MenuItem>
+      <span class="w-3" :on-click="on_expand1" :values={is_selected: !@expanded1}>
+        <Lego.ChevronUpDown is_selected={@expanded1} />
+      </span>
+      <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+        <p class="leading-4 font-semibold text-moon-10">CX</p>
+      </span>
+      <Lego.Title>
+        Customer...</Lego.Title>
+    </MenuItem>
+    {#if @expanded1}
+      <MenuItem>
+        <span class="w-6" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">S</p>
+        </span>
+        <Lego.Title>Sub nested item</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-6" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">S</p>
+        </span>
+        <Lego.Title>Sub nested item</Lego.Title>
+      </MenuItem>
+    {/if}
+    <MenuItem>
+      <span class="w-3" />
+      <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+        <p class="leading-4 font-semibold text-moon-10">CX</p>
+      </span>
+      <Lego.Title>Quality...</Lego.Title>
+    </MenuItem>
+    <MenuItem>
+      <span class="w-3" />
+      <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+        <p class="leading-4 font-semibold text-moon-10">RG</p>
+      </span>
+      <Lego.Title>Responsible...</Lego.Title>
+    </MenuItem>
+    <MenuItem>
+      <span class="w-3" :on-click="on_expand2" :values={is_selected: !@expanded2}>
+        <Lego.ChevronUpDown is_selected={@expanded2} />
+      </span>
+      <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+        <p class="leading-4 font-semibold text-moon-10">RG</p>
+      </span>
+      <Lego.Title>Responsible...</Lego.Title>
+    </MenuItem>
+    {#if @expanded2}
+      <MenuItem>
+        <span class="w-6" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">S</p>
+        </span>
+        <Lego.Title>Sub nested item</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-6" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">S</p>
+        </span>
+        <Lego.Title>Sub nested item</Lego.Title>
+      </MenuItem>
+    {/if}
+    <div class="flex flex-col gap-2 rounded-moon-s-lg">
+      <MenuItem>
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">S</p>
+        </span>
+        <Lego.Title>
+          <p class="leading-6 text-moon-14 font-semibold">Sportsbet</p>
+        </Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-3" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">RG</p>
+        </span>
+        <Lego.Title>Customer...</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-3" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">CX</p>
+        </span>
+        <Lego.Title>Quality...</Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-3" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">RG</p>
+        </span>
+        <Lego.Title>Responsible...</Lego.Title>
+      </MenuItem>
+    </div>
+    <div class="flex flex-col gap-2 rounded-moon-s-lg">
+      <MenuItem>
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">L</p>
+        </span>
+        <Lego.Title>
+          <p class="leading-6 text-moon-14 font-semibold">Livecasino</p>
+        </Lego.Title>
+      </MenuItem>
+      <MenuItem>
+        <span class="w-3" />
+        <span class="bg-gohan w-6 h-6 top-2 left-2 rounded-full flex justify-center items-center">
+          <p class="leading-4 font-semibold text-moon-10">RG</p>
+        </span>
+        <Lego.Title>Customer...</Lego.Title>
+      </MenuItem>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+/* Import scoped CSS rules for components */
+@import "./_components.css";
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/*
+  this is a default theme - used on surface.moon.io
+  feel free to copy and modify it
+*/
+
+@import '../../deps/moon/priv/static/themes/moon.css';
+
+/*
+  Not really required. Only few classes for components
+  are from there. All tailwind imports are already there,
+  so you can remove them from your own app.css
+  also can import _components.css instead
+  @import '../../deps/moon/assets/css/_components.css';  */
+@import '../../deps/moon/assets/css/app.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.press-start-2p-regular {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fade-out 1s forwards; /* Use this class to trigger the fade-out effect */
+}
+
+
+/* This file is for your main application CSS */

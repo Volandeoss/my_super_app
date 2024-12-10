@@ -1,0 +1,139 @@
+<header class="fixed top-0 mb-4 bg-gohan w-full">
+  <div class="relative p-2 flex flex-row gap-2 items-center justify-between text-bulma">
+    <a href="/admin/operators">
+      <svg class="moon-logo" style="height: 2em; width: 2em">
+        <use href="/moon_icons/svgs/logos/logo-moon-design-short.svg#item" />
+      </svg>
+    </a>
+    <ul class="relative z-10 flex items-center gap-4 p-4 sm:px-6 lg:px-8 justify-end">
+      {#if @current_user}
+        <li class="text-[0.8125rem] leading-6 text-zinc-900">
+          {@current_user.email}
+        </li>
+        <li class="text-[0.8125rem] leading-6 text-zinc-900">
+          {#if @current_user.operator_id}
+            <b>(operator {@current_user.operator_name})</b>
+          {#elseif @current_user.role_id}
+            <b>(role {@current_user.role_name})</b>
+          {#else}
+            <b>(superadmin)</b>
+          {/if}
+        </li>
+        <li>
+          <.link
+            href={~p"/users/log_out"}
+            method="delete"
+            class="text-[0.9500rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Log out
+          </.link>
+        </li>
+      {#else}
+        <li>
+          <.link
+            href={~p"/users/register"}
+            class="text-[0.9500rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            <h1>Register</h1>
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/log_in"}
+            class="text-[0.9500rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            <h1>Log in</h1>
+          </.link>
+        </li>
+      {/if}
+    </ul>
+  </div>
+</header>
+
+<nav
+  aria-label="Sidebar"
+  class="fixed top-16 h-screen flex flex-col flex-grow gap-6 mt-16 pb-16 px-5 lg:px-8"
+>
+  <div class="flex flex-col gap-1 pt-3">
+    {#if @current_user.operator_id}
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/"
+      >
+        <b>Users</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/roles/"
+      >
+        <b>Roles</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/sites"
+      >
+        <b>Sites</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/posts"
+      >
+        <b>Blog</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/images/"
+      >
+        <b>Images</b>
+      </a>
+    {/if}
+
+    {#if @current_user.superadmin}
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/"
+      >
+        <b>Users</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/operators/"
+      >
+        <b>Operators</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/posts/"
+      >
+        <b>Blog</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/images/"
+      >
+        <b>Images</b>
+      </a>
+    {/if}
+    {#if @current_user.role_id}
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/posts/"
+      >
+        <b>Blog</b>
+      </a>
+      <a
+        class="flex p-2 bg-transparent cursor-pointer transition items-center justify-start rounded-moon-i-sm gap-2 text-moon-14 w-full focus:outline-none focus:shadow-focus hover:bg-heles"
+        href="/admin/images/"
+      >
+        <b>Images</b>
+      </a>
+    {/if}
+  </div>
+</nav>
+
+<main class="px-4 py-20 sm:px-6 lg:px-8">
+  <div style="margin-left: 176px">
+    <.flash_group flash={@flash} />
+    {@inner_content}
+  </div>
+</main>

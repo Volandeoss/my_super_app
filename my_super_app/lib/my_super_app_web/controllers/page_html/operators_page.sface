@@ -1,0 +1,58 @@
+<p class="text-moon-64 transition-colors mb-20">Operators</p>
+<div class="flex justify-center mb-5">
+  <Button on_click="set_open">Add new operator</Button>
+</div>
+
+<Table items={operator <- @current} sorting_click="handle_sorting_click" {=@sort} is_zebra_style>
+  <Column label="#">
+    {operator.id}
+  </Column>
+  <Column label="name">
+    {operator.name}
+  </Column>
+  <Column label="inserted at">
+    {operator.inserted_at |> DateTime.to_date()} {operator.inserted_at |> NaiveDateTime.to_time()}
+  </Column>
+  <Column label="updated at">
+    {operator.updated_at |> DateTime.to_date()} {operator.updated_at |> NaiveDateTime.to_time()}
+  </Column>
+</Table>
+<Pagination
+  id="with_buttons"
+  total_pages={@total_pages}
+  value={@current_page}
+  on_change="set_current_page"
+  class="mt-4"
+>
+  <Pagination.PrevButton>
+    <ControlsChevronLeftSmall class="text-moon-24 rtl:rotate-180" />
+  </Pagination.PrevButton>
+  <Pagination.Pages />
+  <Pagination.NextButton>
+    <ControlsChevronRightSmall class="text-moon-24 rtl:rotate-180" />
+  </Pagination.NextButton>
+</Pagination>
+
+<Modal id="default_modal" is_open={@editing?} on_close="set_close">
+  <Modal.Backdrop />
+  <Modal.Panel>
+    <div class="p-4 border-b-2 border-beerus">
+      <h3 class="text-moon-18 text-bulma font-medium">
+        Create new operator
+      </h3>
+    </div>
+    <div class="p-4">
+      <p class="text-moon-16 text-trunks">
+        <Form for={@form} change="validate" submit="add">
+          <Field field={:name} class="pt-3">
+            <Input placeholder="New operator" />
+          </Field>
+          <div class="pt-3 flex justify-center">
+            <Button type="submit" class="ml-4">Save</Button>
+            <Button on_click="set_close" class="ml-4">Close</Button>
+          </div>
+        </Form>
+      </p>
+    </div>
+  </Modal.Panel>
+</Modal>

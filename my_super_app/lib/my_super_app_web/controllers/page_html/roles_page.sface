@@ -1,0 +1,87 @@
+<p class="text-moon-64 transition-colors mb-20">Roles</p>
+
+<div class="flex  items-center">
+  <Button on_click="set_open" class="my-8 mr-4">Add new Role</Button>
+
+  <Dropdown id="dropdown-02" class="my-8 w-[10%]" on_change="set_operator">
+    <Dropdown.Options titles={["All" | CasinosAdmins.get_oper_name()]} />
+    <Dropdown.Trigger :let={value: _value}>
+      <Chip class="w-64 w-[100%]">{@value || "Filter by operator"}</Chip>
+    </Dropdown.Trigger>
+  </Dropdown>
+</div>
+
+<Table
+  items={role <- get_models_10(assigns)}
+  {=@sort}
+  sorting_click="on_sorting_click"
+  is_zebra_style
+>
+  <Column label="#" name="id" sortable>
+    {role.id}
+  </Column>
+  <Column name="name" label="Role" sortable>
+    {role.name}
+  </Column>
+  <Column label="operator" name="operator_name" sortable>
+    {role.operator_name}
+  </Column>
+  <Column label="inserted at" name="inserted_at" sortable>
+    {role.inserted_at}
+  </Column>
+  <Column label="updated at" name="updated_at" sortable>
+    {role.updated_at}
+  </Column>
+  <Column>
+    <IconButton icon="other_flame" size="xl" class="bg-[red]" on_click="delete" value={role.id}>Delete</IconButton>
+  </Column>
+</Table>
+
+<Pagination
+  id="with_buttons"
+  total_pages={@total_pages}
+  value={@current_page}
+  on_change="handle_paging_click"
+>
+  <Pagination.PrevButton class="border-none">
+    <ControlsChevronLeft class="text-moon-24 rtl:rotate-180" />
+  </Pagination.PrevButton>
+  <Pagination.Pages />
+  <Pagination.NextButton class="border-none">
+    <ControlsChevronRight class="text-moon-24 rtl:rotate-180" />
+  </Pagination.NextButton>
+</Pagination>
+
+<Modal id="default_modal" is_open={@editing?} on_close="set_close">
+  <Modal.Backdrop />
+  <Modal.Panel>
+    <div class="p-4 border-b-2 border-beerus">
+      <h3 class="text-moon-18 text-bulma font-medium">
+        Create new role
+      </h3>
+    </div>
+    <div class="p-4">
+      <p class="text-moon-16 text-trunks">
+        <Form for={@form} change="validate" submit="add">
+          <Dropdown disabled id="dropdown-03">
+            <Dropdown.Options titles={[]} />
+            <Dropdown.Trigger disabled :let={value: _value}>
+              <Chip disabled class="w-64">{"operator: #{@current_user.operator_name}"}</Chip>
+            </Dropdown.Trigger>
+          </Dropdown>
+          <Field field={:name} class="pt-3">
+            <Input placeholder="New Role" />
+          </Field>
+          <Field field={:operator_id} class="pt-3">
+            <input hidden value={@current_user.operator_id}>
+          </Field>
+
+          <div class="pt-3 flex justify-center">
+            <Button type="submit" class="ml-4">Save</Button>
+            <Button on_click="set_close" class="ml-4">Close</Button>
+          </div>
+        </Form>
+      </p>
+    </div>
+  </Modal.Panel>
+</Modal>

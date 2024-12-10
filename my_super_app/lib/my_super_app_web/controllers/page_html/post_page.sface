@@ -1,0 +1,240 @@
+<p class="text-moon-64 transition-colors mb-20">Blog</p>
+
+<div class="flex mb-5">
+  <Button on_click="set_open" class="mr-2">Write post</Button>
+</div>
+<div class="mb-5">
+  <Tabs id="tabs-ex-8" {=@selected}>
+    <Tabs.List>
+      <Tabs.Pill class="hover:bg-hit/30" selected_class="bg-hit/30" on_change="show_all_posts">Show all posts</Tabs.Pill>
+      <Tabs.Pill class="hover:bg-hit/30" selected_class="bg-hit/30" on_change="show_unpublished_posts">Show unpublished posts</Tabs.Pill>
+      <Tabs.Pill class="hover:bg-hit/30" selected_class="bg-hit/30" on_change="show_published_posts">Show published posts</Tabs.Pill>
+    </Tabs.List>
+  </Tabs>
+</div>
+<div class="flex justify-left mb-5">
+  <Search
+    id="default-search"
+    class="w-[30%]"
+    {=@filter}
+    prompt="filter by title"
+    on_keyup="change_filter"
+    options={[]}
+  ><Dropdown id="1" disabled>
+      <Dropdown.Trigger disabled />
+    </Dropdown></Search>
+  <Tooltip class="w-[20%] ml-10">
+    <Tooltip.Trigger>
+      <Form id="user_disabled" for={@form_drop_user} change="select_user">
+        <Form.Field field={:user_id}>
+          <Form.Dropdown prompt="select user" options={[%{key: "Show all users", value: "0"} | @users]} />
+        </Form.Field>
+      </Form>
+    </Tooltip.Trigger>
+    <Tooltip.Content>
+      Filter by authors
+      <Tooltip.Arrow />
+    </Tooltip.Content>
+  </Tooltip>
+  <Tooltip class="w-[20%] ml-10 mr-10">
+    <Tooltip.Trigger>
+      <Form id="tags" for={@form_drop_tags} change="select_tag">
+        <Form.Field field={:id}>
+          <Form.Dropdown prompt="select tag" options={[%{key: "Show all posts", value: "0"} | @tags]} />
+        </Form.Field>
+      </Form>
+    </Tooltip.Trigger>
+    <Tooltip.Content>
+      Filter by tags
+      <Tooltip.Arrow />
+    </Tooltip.Content>
+  </Tooltip>
+  <Chip is_stroke class="mt-1 mr-5 bg-gray-200" size="sm" on_click="clear_all">Clear all</Chip>
+</div>
+<div id="post_table">
+  <Table
+    items={post <- get_models_10(assigns)}
+    {=@sort}
+    sorting_click="on_sorting_click"
+    is_zebra_style
+  >
+    <Column label="#" name="id" sortable>
+      {post.id}
+    </Column>
+    <Column label="title" name="title" sortable>
+      {post.title}
+      <div class="flex flex-wrap max-w-[360px]">
+        {#for tag <- post.tags}
+          <MoonTag size="xs" class="mt-5 mr-5">
+            {tag.title}
+            <:left_icon><TextHashtag /></:left_icon>
+          </MoonTag>
+        {/for}
+      </div>
+    </Column>
+    <Column label="inserted at" name="inserted_at" sortable>
+      {post.inserted_at |> DateTime.to_date()} {post.inserted_at |> NaiveDateTime.to_time()}
+    </Column>
+    <Column label="updated at" name="updated_at" sortable>
+      {post.updated_at |> DateTime.to_date()} {post.updated_at |> NaiveDateTime.to_time()}
+    </Column>
+    <Column label="published at">
+      {#if post.published_at}
+        {post.published_at |> DateTime.to_date()} {post.published_at |> NaiveDateTime.to_time()}
+      {/if}
+    </Column>
+    <Column label="author">
+      {post.user.username}
+    </Column>
+    <Column>
+      {#if @current_user.superadmin or @current_user.operator_id != nil}
+        <div class="flex">
+          {#if post.published_at}
+            <IconButton
+              icon="generic_close"
+              class="mr-2 bg-krillin"
+              size="xl"
+              on_click="unpublish"
+              value={post.id}
+            />
+          {#else}
+            <IconButton
+              icon="generic_check_rounded"
+              class="mr-2 bg-roshi"
+              size="xl"
+              on_click="publish"
+              value={post.id}
+            />
+          {/if}
+          <IconButton icon="other_flame" size="xl" on_click="set_open" value={post.id}>Delete</IconButton>
+        </div>
+      {#elseif @current_user.role_id != nil}
+        <IconButton
+          icon="chat_comment_text"
+          class="bg-krillin"
+          size="xl"
+          on_click="set_open"
+          value={post.id}
+        />
+      {/if}
+    </Column>
+  </Table>
+</div>
+<Pagination
+  id="with_buttons"
+  total_pages={@total_pages}
+  value={@current_page}
+  on_change="handle_paging_click"
+>
+  <Pagination.PrevButton class="border-none">
+    <ControlsChevronLeft class="text-moon-24 rtl:rotate-180" />
+  </Pagination.PrevButton>
+  <Pagination.Pages />
+  <Pagination.NextButton class="border-none">
+    <ControlsChevronRight class="text-moon-24 rtl:rotate-180" />
+  </Pagination.NextButton>
+</Pagination>
+
+<div>
+  <Modal id="big_content_modal" is_open={@editing?} on_close="set_close">
+    <Modal.Backdrop />
+    <Modal.Panel class="whitespace-normal">
+      {#if @id && (@current_user.operator_id || @current_user.superadmin)}
+        <div class="p-4 border-b-2 border-beerus">
+          <h3 class="text-moon-18 text-bulma font-medium">
+            <b>
+              Are you sure?
+            </b>
+          </h3>
+          <div class="flex flex-wrap justify-left w-[350px]">
+            <h3>
+              <p class="text-gray-500"><b>Author: {@post.user.username}</b></p>
+            </h3>
+          </div>
+        </div>
+        <div class="p-4">
+          <p class="text-moon-16 text-trunks whitespace-normal">
+            <p class="flex justify-center text-2xl"><b>{@post.title}</b></p>
+            <p class="break-all mt-2">{@post.body}</p>
+            <div class="flex flex-wrap justify-right w-[350px]">
+              {#for tag <- @post.tags}
+                <MoonTag size="xs" class="mt-5 mr-5">
+                  {tag.title}
+                  <:left_icon><TextHashtag /></:left_icon>
+                </MoonTag>
+              {/for}
+            </div>
+          </p>
+        </div>
+        <div class="p-4 border-t-2 border-beerus" style="display: flex">
+          <Button on_click="set_close">Nooo!</Button>
+          <Button animation="error" class="ml-44" on_click="delete">Delete post</Button>
+        </div>
+      {#elseif @current_user.role_id != nil and @id != nil}
+        <div class="p-4 border-b-2 border-beerus">
+          <h3>
+            <p class="text-gray-500"><b>Author: {@post.user.username}</b></p>
+          </h3>
+        </div>
+        <div class="p-4">
+          <p class="text-moon-16">
+            <p class="break-all">{@post.body}</p>
+            <p class="flex justify-center text-2xl"><b>{@post.title}</b></p>
+            <div class="flex flex-wrap justify-right w-[350px]">
+              {#for tag <- @post.tags}
+                <MoonTag size="xs" class="mt-5 mr-5">
+                  {tag.title}
+                  <:left_icon><TextHashtag /></:left_icon>
+                </MoonTag>
+              {/for}
+            </div>
+          </p>
+        </div>
+        <div class="p-4 border-t-2 border-beerus" style="display: flex">
+          <Button on_click="set_close">Close</Button>
+        </div>
+      {#else}
+        <div class="p-4 border-b-2 border-beerus">
+          <h3 class="text-moon-18 text-bulma font-medium">
+            Create new Post
+          </h3>
+        </div>
+        <div class="p-4">
+          <p class="text-moon-16 text-trunks">
+            <div class="flex flex-wrap justify-right w-[350px]">
+              {#for tag <- @tags_input}
+                <MoonTag size="xs" class="mt-5 mr-5">
+                  {tag.title}
+                  <:left_icon><TextHashtag /></:left_icon>
+                </MoonTag>
+              {/for}
+              {#if !@adding_tag}
+                <Chip is_stroke class="mt-4 mr-5" size="sm" on_click="get_tag_form"><ControlsPlus /></Chip>
+              {#else}
+                <Form for={@form_tag} change="validate_tag" class="w-[40%]" submit="add_tag">
+                  <Field field={:title} class="pt-3">
+                    <Input placeholder="Add tags" />
+                  </Field>
+                </Form>
+              {/if}
+            </div>
+            <Form for={@form} change="validate" submit="add">
+              <Field field={:title} class="pt-3">
+                <Input placeholder="Title" />
+              </Field>
+              <Field field={:body} class="pt-3">
+                <Moon.Design.Form.TextArea />
+              </Field>
+              <div class="pt-3 flex justify-center">
+                {#if @form.source.valid?}
+                  <Button type="submit" class="ml-4">Save</Button>
+                {/if}
+                <Button on_click="set_close" class="ml-4">Close</Button>
+              </div>
+            </Form>
+          </p>
+        </div>
+      {/if}
+    </Modal.Panel>
+  </Modal>
+</div>
